@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:motion_art/SensorClass/sensorData.dart';
 
@@ -47,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double posY = 0;
   double posZ = 0;
 
-  void _incrementCounter() {
+  void updateVals() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -61,7 +63,14 @@ class _MyHomePageState extends State<MyHomePage> {
       posZ = sensor.zPos;
     });
   }
-
+  late Timer _timer;
+  @override
+  void initState() {
+    super.initState();
+    _timer =Timer.periodic(const Duration(milliseconds: 200), (Timer timer){
+      updateVals();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -113,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: updateVals,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

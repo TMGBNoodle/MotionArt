@@ -25,27 +25,28 @@ class Sensordata {
   double magnitude(x, y, z){
     return sqrt((x^2+y^2+z^2));
   }
+  double roundNumTo(x, decimal){
+    return num.parse(x.toStringAsFixed(decimal)).toDouble();
+  }
   void updateVals(UserAccelerometerEvent event){
     dateTime = DateTime.now();
     deltaT = (dateTime.millisecondsSinceEpoch - time).toDouble()/1000; //Change in time in seconds
-    if(deltaT > 0.01){
-      xAccel = num.parse(event.x.toStringAsFixed(1)).toDouble();
-      yAccel = num.parse(event.y.toStringAsFixed(1)).toDouble();
-      zAccel = num.parse(event.z.toStringAsFixed(1)).toDouble();
-      print("$xAccel, $yAccel, $zAccel");
-      //if(magnitude(xAccel, yAccel, zAccel) > 0.01){
-      double initX = velX;
-      double initY = velY;
-      double initZ = velZ;
-      velX = (xAccel*deltaT) + initX;
-      velY = (yAccel*deltaT) + initY;
-      velZ = (zAccel*deltaT) + initZ;
-      xPos = xPos + ((initX+velX)/2)*deltaT;
-      yPos = yPos + ((initY+velY)/2)*deltaT;
-      zPos = zPos + ((initY+velZ)/2)*deltaT;
-      print("$xPos, $yPos, $zPos");
+    if(deltaT > 0.2)
+    {
+      print("Raw Accel: ${event.x-(-0.005)}, ${event.y- (-0.002)}, ${event.z - (0.003)}");
+      xAccel = num.parse((event.x-(-0.005)).toStringAsFixed(2)).toDouble();
+      yAccel = num.parse((event.y- (-0.002)).toStringAsFixed(2)).toDouble();
+      zAccel = num.parse((event.z - (0.003)).toStringAsFixed(2)).toDouble();
+      print("Accel: ${xAccel}, ${yAccel}, ${zAccel}");
+      velX = roundNumTo(((xAccel*deltaT + velX)),0);
+      velY = roundNumTo(((yAccel*deltaT + velY)),0);
+      velZ = roundNumTo(((zAccel*deltaT + velZ)),0);
+      print("Velocity: ${velX}, ${velY}, ${velZ}");
+      xPos = roundNumTo((xPos + ((velX)/2)*deltaT), 2);
+      yPos = roundNumTo((yPos + ((velY)/2)*deltaT), 2);
+      zPos = roundNumTo((zPos + ((velZ)/2)*deltaT), 2);
+      print("Pos: $xPos, $yPos, $zPos");
       time = dateTime.millisecondsSinceEpoch;
-      //}
     }
   }
   void init() { 
