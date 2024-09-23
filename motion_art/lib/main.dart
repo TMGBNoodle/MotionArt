@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:motion_art/SensorClass/sensorData.dart';
 
 void main() {
@@ -14,12 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Motion Art',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Motion Art'),
     );
   }
 }
@@ -64,6 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
   late Timer _timer;
+
+  get background => null;
   @override
   void initState() {
     super.initState();
@@ -93,23 +96,11 @@ class _MyHomePageState extends State<MyHomePage> {
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
+
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'Test the Motion Draw App!',
             ),
             Text(
               '$_counter',
@@ -117,10 +108,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               "$posX, $posY, $posZ"
-            )
+            ),
+            DrawingBoard(background: background)
+            //Create New DrawingBoard Here
           ],
         ),
+
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: updateVals,
         tooltip: 'Increment',
