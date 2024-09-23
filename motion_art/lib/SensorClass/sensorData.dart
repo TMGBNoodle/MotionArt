@@ -37,11 +37,11 @@ class Sensordata {
       xAccel = num.parse((event.x-(-0.005)).toStringAsFixed(2)).toDouble();
       yAccel = num.parse((event.y- (-0.002)).toStringAsFixed(2)).toDouble();
       zAccel = num.parse((event.z - (0.003)).toStringAsFixed(2)).toDouble();
-      print("Accel: ${xAccel}, ${yAccel}, ${zAccel}");
+      print("Accel: $xAccel, $yAccel, $zAccel");
       velX = roundNumTo(((xAccel*deltaT + velX)),0);
       velY = roundNumTo(((yAccel*deltaT + velY)),0);
       velZ = roundNumTo(((zAccel*deltaT + velZ)),0);
-      print("Velocity: ${velX}, ${velY}, ${velZ}");
+      print("Velocity: $velX, $velY, $velZ");
       xPos = roundNumTo((xPos + ((velX)/2)*deltaT), 2);
       yPos = roundNumTo((yPos + ((velY)/2)*deltaT), 2);
       zPos = roundNumTo((zPos + ((velZ)/2)*deltaT), 2);

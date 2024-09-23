@@ -7,7 +7,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:motion_art/SensorClass/sensorData.dart';
 
 import 'package:motion_art/main.dart';
 void main() {
