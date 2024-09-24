@@ -78,14 +78,19 @@ class _MyHomePageState extends State<MyHomePage> {
         child: GestureDetector(
           onPanStart: (details) {
             print("Global position is: ${details.globalPosition}");
-            _offsets.add(details.globalPosition);
-          }, onPanUpdate: (details) {
-
-            _offsets.add(details.globalPosition);
-
+            setState(() {
+              _offsets.add(details.globalPosition);
+            });
+          },
+            onPanUpdate: (details) {
+            setState(() {
+              _offsets.add(details.globalPosition);
+            });
         },
             onPanEnd: (details) {
-            _offsets.add(details.globalPosition);
+            setState(() {
+              _offsets.add(Offset(0, 0));
+            });
             },
           child: CustomPaint(
             painter: MotionPainter(_offsets),
@@ -124,13 +129,15 @@ class MotionPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint();
+    final paint = Paint()
+      ..color=Colors.black
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5;
     for (var offset in offsets) {
       print("Offset: ${offset}");
       canvas.drawPoints(
-          PointMode.points, [offsets], paint);
+          PointMode.points, offsets, paint);
     }
-    // TODO: implement paint
   }
 
   @override
