@@ -41,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double posY = 0;
   double posZ = 0;
   final _offsets = <Offset>[];
+  List<double>? xyz;
 
   void updateVals() {
     setState(() {
@@ -51,9 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
 
       _counter++;
-      posX = sensor.xPos;
-      posY = sensor.yPos;
-      posZ = sensor.zPos;
+      xyz = sensor.grabXYZ();
+      posX = xyz![0];
+      posY = xyz![1];
+      posZ = xyz![2];
     });
   }
   late Timer _timer;
@@ -62,6 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    xyz = sensor.grabXYZ();
     _timer =Timer.periodic(const Duration(milliseconds: 200), (Timer timer){
       updateVals();
     });
