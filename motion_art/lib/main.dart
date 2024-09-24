@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
@@ -27,16 +28,6 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -49,6 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double posX = 0;
   double posY = 0;
   double posZ = 0;
+  final _offsets = <Offset>[];
 
   void updateVals() {
     setState(() {
@@ -58,10 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
 
-      //_counter++;
-      //posX = sensor.xPos;
-      //posY = sensor.yPos;
-      //posZ = sensor.zPos;
+      _counter++;
+      posX = sensor.xPos;
+      posY = sensor.yPos;
+      posZ = sensor.zPos;
     });
   }
   late Timer _timer;
@@ -74,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
       updateVals();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,33 +77,62 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: GestureDetector(
           onPanStart: (details) {
+            print("Global position is: ${details.globalPosition}");
+            _offsets.add(details.globalPosition);
+          }, onPanUpdate: (details) {
 
-          },
+            _offsets.add(details.globalPosition);
+
+        },
+            onPanEnd: (details) {
+            _offsets.add(details.globalPosition);
+            },
           child: CustomPaint(
+            painter: MotionPainter(_offsets),
             child: Container(
               height: 300,
               width: 300,
               color: Colors.pink,
-              // child: Column(
-              //
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: <Widget>[
-              //     const Text(
-              //       'Test the Motion Draw App!',
-              //     ),
-              //     Text(
-              //       '$_counter',
-              //       style: Theme.of(context).textTheme.headlineMedium,
-              //     ),
-              //     Text(
-              //         "$posX, $posY, $posZ"
-              //     ),
-              //   ],
-              // ),
+              child: Column(
+
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Text(
+                      'Test the Motion Draw App!',
+                    ),
+                    Text(
+                      '$_counter',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    Text(
+                        "$posX, $posY, $posZ"
+                    ),
+                  ],
+               ),
             )
             )
           )
         ),
       );
   }
+}
+
+class MotionPainter extends CustomPainter {
+  final offsets;
+
+  MotionPainter(this.offsets) : super();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint();
+    for (var offset in offsets) {
+      print("Offset: ${offset}");
+      canvas.drawPoints(
+          PointMode.points, [offsets], paint);
+    }
+    // TODO: implement paint
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
