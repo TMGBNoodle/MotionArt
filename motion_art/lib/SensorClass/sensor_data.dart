@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class Sensordata {
