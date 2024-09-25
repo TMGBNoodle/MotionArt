@@ -24,6 +24,7 @@ class DrawPageState extends State<DrawPage> {
   final _offsets = <Offset>[];
   List<double>? xyz;
   List<Offset> positions = [];
+  bool canDraw = false;
 
   void updateVals() {
     setState(() {
@@ -43,14 +44,26 @@ class DrawPageState extends State<DrawPage> {
   }
   late Timer _timer;
 
+  String buttonText() {
+    if (canDraw) {
+      return "Stop Drawing";
+    } return "Start Drawing";
+  }
+
   get background => null;
   @override
   void initState() {
     super.initState();
     xyz = sensor.grabXYZ();
-    _timer =Timer.periodic(const Duration(milliseconds: 50), (Timer timer){
+    _timer = Timer.periodic(const Duration(milliseconds: 50), (Timer timer){
       updateVals();
     });
+  }
+
+  void maybeSetState() {
+    if (canDraw) {
+      setState((){});
+    }
   }
 
   @override
@@ -58,53 +71,52 @@ class DrawPageState extends State<DrawPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text("Draw Page"),
+        title: const Text("Draw Page"),
       ),
-      body: Center(
-        child: GestureDetector(
-          onPanStart: (details) {
-            print("Global position is: ${details.globalPosition}");
-            setState(() {
-              //_offsets.add(details.globalPosition);
-            });
-          },
-            onPanUpdate: (details) {
-            setState(() {
-              //_offsets.add(details.globalPosition);
-            });
-        },
-            onPanEnd: (details) {
-            setState(() {
-              //_offsets.add(Offset(0, 0));
-            });
-            },
-          child: CustomPaint(
-            painter: MotionPainter(_offsets, positions),
-            child: Container(
-              height: 300,
-              width: 300,
-              color: Colors.transparent,
-              child: Column(
-
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Text(
-                      'Test the Motion Draw App!',
-                    ),
-                    // Text(
-                    //   '$_counter',
-                    //   style: Theme.of(context).textTheme.headlineMedium,
-                    // ),
-                    Text(
-                        "$posX, $posY, $posZ"
-                    ),
-                  ],
-               ),
-            )
-            )
+      body: Column(
+        children: <Widget>[
+          Expanded( 
+            child: Center( 
+              child: GestureDetector(
+                onPanStart: (details) {
+                  maybeSetState();
+                },
+                  onPanUpdate: (details) {
+                  maybeSetState();
+                },
+                  onPanEnd: (details) {
+                  maybeSetState();
+                },
+              child: CustomPaint(
+                painter: MotionPainter(_offsets, positions),
+                child: Container(
+                  height: 300,
+                  width: 300,
+                  color: Colors.transparent,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text(
+                        'Test the Motion Draw App!',
+                      ), Text("$posX, $posY, $posZ")
+                    ]
+                  )
+                ),
+              )
+            ),
           )
+        ), const Spacer(),
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: ElevatedButton(
+            onPressed: () {
+              setState(() { canDraw = !canDraw; });
+            },
+            child: Text(buttonText()),
+          ),
         ),
-      );
+      ])
+    );
   }
 }
 
