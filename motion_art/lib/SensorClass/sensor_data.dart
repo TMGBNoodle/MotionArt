@@ -11,6 +11,7 @@ class Sensordata {
   }
   DateTime dateTime = DateTime.now();
   Duration samplePeriod = const Duration(milliseconds: 10);
+  int multiplier = 50;
   List<double> times = [0];
   List<double> xAccels = [0, 0];
   List<double> yAccels = [0, 0];
@@ -65,7 +66,10 @@ class Sensordata {
         if(xAccels[1].abs() <= 0.05){
           xAccels[1] = 0.0;
           xZeroCount+=1;
-        } else {xZeroCount = 0;}
+        } else if(xAccels[1].abs() > 50) {
+          xAccels[1] = 100;
+        }
+        else {xZeroCount = 0;}
         if(yAccels[1].abs() <= 0.05){
           yAccels[1] = 0.0;
           yZeroCount+=1;
@@ -74,17 +78,17 @@ class Sensordata {
           zAccels[1] = 0.0;
           zZeroCount+=1;
         } else {zZeroCount = 0;}
-        if(xZeroCount>=5){
+        if(xZeroCount>=10){
           xVels[1] = 0;
         } else{
           xVels[1] = xVels[0] + xAccels[0] + ((xAccels[1]-xAccels[0])/2) * deltaT;
         }
-        if(yZeroCount>=5){
+        if(yZeroCount>=10){
           yVels[1] = 0;
         } else {
           yVels[1] = yVels[0] + yAccels[0] + ((yAccels[1]-yAccels[0])/2) * deltaT;
         }
-        if(zZeroCount>=5){
+        if(zZeroCount>=10){
           zVels[1] = 0;
         } else {
           zVels[1] = zVels[0] + zAccels[0] + ((zAccels[1]-zAccels[0])/2) * deltaT;
@@ -104,6 +108,8 @@ class Sensordata {
         xPositions[0] = xPositions[1];
         yPositions[0] = yPositions[1];
         zPositions[0] = zPositions[1];
+        dateTime = DateTime.now();
+        time = dateTime.millisecondsSinceEpoch;
       }
     }
   }
@@ -112,11 +118,14 @@ class Sensordata {
     stream.add(userAccelerometerEventStream(samplingPeriod: samplePeriod).listen(updateVals));
   }
   List<double> grabXYZ(){
-    return [xPositions.last, yPositions.last, zPositions.last];
+    return [xPositions.last * multiplier, yPositions.last * multiplier, zPositions.last * multiplier];
   }
   void reInit(){
     xPositions = [0,0];
     yPositions = [0,0];
     zPositions = [0,0];
+    xVels = [0,0];
+    yVels = [0,0];
+    zVels = [0,0];
   }
 }

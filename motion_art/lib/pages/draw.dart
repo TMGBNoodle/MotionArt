@@ -130,7 +130,7 @@ class MotionPainter extends CustomPainter {
     //   canvas.drawPoints(
     //       PointMode.points, offsets, paint);
     // }
-    canvas.drawPoints(PointMode.lines, positions, otherPaint);
+    canvas.drawPoints(PointMode.polygon, positions, otherPaint);
   }
 
   @override
