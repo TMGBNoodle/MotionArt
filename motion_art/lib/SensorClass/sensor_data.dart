@@ -21,16 +21,7 @@ class Sensordata {
   List<double> xPositions = [0, 0];
   List<double> yPositions = [0, 0];
   List<double> zPositions = [0, 0];
-  final int interval = 128;
-  double xAccel = 0;
-  double yAccel = 0;
-  double zAccel = 0;
-  double velX = 0;
-  double velY = 0;
-  double velZ = 0;
-  double xPos = 0;
-  double yPos = 0;
-  double zPos = 0;
+  final int interval = 64;
   double zeroX = 0;
   double zeroY = 0;
   double zeroZ = 0;
@@ -43,14 +34,7 @@ class Sensordata {
   double deltaT = 0;
   UserAccelerometerEvent? acceleration;
   final stream = <StreamSubscription<UserAccelerometerEvent>>[];
-  
-  double roundNumTo(x, decimal){
-    return num.parse(x.toStringAsFixed(decimal)).toDouble();
-  }
 
-  double magnitude(x, y, z){
-    return sqrt((x^2+y^2+z^2));
-  }
   void updateVals(UserAccelerometerEvent event){
     dateTime = DateTime.now();
     deltaT = (dateTime.millisecondsSinceEpoch - time).toDouble()/1000; //Change in time in seconds
@@ -61,7 +45,6 @@ class Sensordata {
       count += 1;
       if(count >= 1024){
         zeroX = zeroX/count;
-        print("Elsa $zeroX");
         zeroY = zeroY/count;
         zeroZ = zeroZ/count;
         zeroFlag = false;
@@ -123,30 +106,6 @@ class Sensordata {
         zPositions[0] = zPositions[1];
       }
     }
-    // deltaT = (dateTime.millisecondsSinceEpoch - time).toDouble()/1000; //Change in time in seconds
-    // times.add(deltaT);
-    // xAccels.add(event.x-zeroX);
-    // yAccels.add(event.y-zeroY);
-    // zAccels.add(event.z-zeroZ);
-    // if(xAccels.length > 2){
-    //   xAccels.removeAt(0);
-    //   yAccels.removeAt(0);
-    //   zAccels.removeAt(0);
-    // }
-    // print("Accel: $xAccel, $yAccel, $zAccel");
-    // velX = roundNumTo(((xAccel*deltaT + velX)),0);
-    // velY = roundNumTo(((yAccel*deltaT + velY)),0);
-    // velZ = roundNumTo(((zAccel*deltaT + velZ)),0);
-    // print("Velocity: $velX, $velY, $velZ");
-    // xPos = roundNumTo((xPos + ((velX)/2)*deltaT), 2);
-    // yPos = roundNumTo((yPos + ((velY)/2)*deltaT), 2);
-    // zPos = roundNumTo((zPos + ((velZ)/2)*deltaT), 2);
-    // print("${event.x}, ${event.y}, ${event.z}");
-    // print("Accels: ${xAccels}, ${yAccels}, ${zAccels}");
-    // print("Vels: ${xVels}, ${yVels}, ${zVels}");
-    // print("Positions: ${xPositions}, ${yPositions}, ${zPositions}");
-    // print("Pos: ${xPositions.last}, ${yPositions.last}, ${zPositions.last}");
-    // time = dateTime.millisecondsSinceEpoch;
   }
   void init() { 
     time = dateTime.millisecondsSinceEpoch;
@@ -156,8 +115,8 @@ class Sensordata {
     return [xPositions.last, yPositions.last, zPositions.last];
   }
   void reInit(){
-    xPos = 0;
-    yPos = 0;
-    zPos = 0;
+    xPositions = [0,0];
+    yPositions = [0,0];
+    zPositions = [0,0];
   }
 }
