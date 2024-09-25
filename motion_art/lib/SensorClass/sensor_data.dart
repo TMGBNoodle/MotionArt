@@ -79,7 +79,7 @@ class Sensordata {
         zAccels[1] = zAccels[1]/count;
         count = 0;
         print("Sampling finished, ${xAccels[1]}");
-        if(xAccels[1].abs() <= 0.01){
+        if(xAccels[1].abs() <= 0.01 ){
           xAccels[1] = 0.0;
           xZeroCount+=1;
         } else {xZeroCount = 0;}
