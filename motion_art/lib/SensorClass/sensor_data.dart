@@ -21,7 +21,7 @@ class Sensordata {
   List<double> xPositions = [0, 0];
   List<double> yPositions = [0, 0];
   List<double> zPositions = [0, 0];
-  final int interval = 64;
+  final int interval = 16;
   double zeroX = 0;
   double zeroY = 0;
   double zeroZ = 0;
@@ -62,15 +62,15 @@ class Sensordata {
         zAccels[1] = zAccels[1]/count;
         count = 0;
         print("Sampling finished, ${xAccels[1]}");
-        if(xAccels[1].abs() <= 0.01 ){
+        if(xAccels[1].abs() <= 0.05){
           xAccels[1] = 0.0;
           xZeroCount+=1;
         } else {xZeroCount = 0;}
-        if(yAccels[1].abs() <= 0.01){
+        if(yAccels[1].abs() <= 0.05){
           yAccels[1] = 0.0;
           yZeroCount+=1;
         } else {yZeroCount = 0;}
-        if(zAccels[1].abs() <= 0.01){
+        if(zAccels[1].abs() <= 0.05){
           zAccels[1] = 0.0;
           zZeroCount+=1;
         } else {zZeroCount = 0;}

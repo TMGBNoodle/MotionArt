@@ -17,12 +17,13 @@ class DrawPage extends StatefulWidget {
 
 class DrawPageState extends State<DrawPage> {
   Sensordata sensor = Sensordata();
-  int _counter = 0;
+  //int _counter = 0;
   double posX = 0;
   double posY = 0;
   double posZ = 0;
   final _offsets = <Offset>[];
   List<double>? xyz;
+  List<Offset> positions = [];
 
   void updateVals() {
     setState(() {
@@ -32,11 +33,12 @@ class DrawPageState extends State<DrawPage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
 
-      _counter++;
+      //_counter++;
       xyz = sensor.grabXYZ();
       posX = xyz![0];
       posY = xyz![1];
       posZ = xyz![2];
+      positions.add(Offset(posX, posY));
     });
   }
   late Timer _timer;
@@ -46,7 +48,7 @@ class DrawPageState extends State<DrawPage> {
   void initState() {
     super.initState();
     xyz = sensor.grabXYZ();
-    _timer =Timer.periodic(const Duration(milliseconds: 200), (Timer timer){
+    _timer =Timer.periodic(const Duration(milliseconds: 50), (Timer timer){
       updateVals();
     });
   }
@@ -63,25 +65,25 @@ class DrawPageState extends State<DrawPage> {
           onPanStart: (details) {
             print("Global position is: ${details.globalPosition}");
             setState(() {
-              _offsets.add(details.globalPosition);
+              //_offsets.add(details.globalPosition);
             });
           },
             onPanUpdate: (details) {
             setState(() {
-              _offsets.add(details.globalPosition);
+              //_offsets.add(details.globalPosition);
             });
         },
             onPanEnd: (details) {
             setState(() {
-              _offsets.add(Offset(0, 0));
+              //_offsets.add(Offset(0, 0));
             });
             },
           child: CustomPaint(
-            painter: MotionPainter(_offsets),
+            painter: MotionPainter(_offsets, positions),
             child: Container(
               height: 300,
               width: 300,
-              color: Colors.pink,
+              color: Colors.transparent,
               child: Column(
 
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -89,10 +91,10 @@ class DrawPageState extends State<DrawPage> {
                     const Text(
                       'Test the Motion Draw App!',
                     ),
-                    Text(
-                      '$_counter',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
+                    // Text(
+                    //   '$_counter',
+                    //   style: Theme.of(context).textTheme.headlineMedium,
+                    // ),
                     Text(
                         "$posX, $posY, $posZ"
                     ),
@@ -108,8 +110,8 @@ class DrawPageState extends State<DrawPage> {
 
 class MotionPainter extends CustomPainter {
   final offsets;
-
-  MotionPainter(this.offsets) : super();
+  var positions;
+  MotionPainter(this.offsets, this.positions) : super();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -117,11 +119,18 @@ class MotionPainter extends CustomPainter {
       ..color=Colors.black
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 5;
-    for (var offset in offsets) {
-      print("Offset: ${offset}");
-      canvas.drawPoints(
-          PointMode.points, offsets, paint);
-    }
+
+    final otherPaint = Paint()
+      ..color = Colors.green
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 5;
+
+    // for (var offset in offsets) {
+    //   print("Offset: ${offset}");
+    //   canvas.drawPoints(
+    //       PointMode.points, offsets, paint);
+    // }
+    canvas.drawPoints(PointMode.lines, positions, otherPaint);
   }
 
   @override
