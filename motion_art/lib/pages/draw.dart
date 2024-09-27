@@ -27,6 +27,7 @@ class DrawPageState extends State<DrawPage> {
   List<double>? xyz;
   List<Offset> positions = [];
   bool canDraw = false;
+  bool calibrating = true;
 
   void updateVals() {
     setState(() {
@@ -38,17 +39,24 @@ class DrawPageState extends State<DrawPage> {
 
       //_counter++;
       xyz = sensor.grabXYZ();
-      canDraw = sensor.zeroFlag;
+      calibrating = sensor.zeroFlag;
       posX = xyz![0];
       posY = -xyz![1];
       posZ = xyz![2];
-      positions.add(Offset(posX + xPosOffset, posY + yPosOffset));
+      if(canDraw) {
+        positions.add(Offset(posX + xPosOffset, posY + yPosOffset));
+      }
     });
   }
   late Timer _timer;
 
   String buttonText() {
     if (canDraw) {
+      return "Stop Drawing";
+    } return "Start Drawing";
+  }
+  String buttonText2() { 
+    if (calibrating) {
       return "Please don't move the phone, calibrating";
     } return "Calibrated";
   }
@@ -101,7 +109,7 @@ class DrawPageState extends State<DrawPage> {
                     children: <Widget>[
                       const Text(
                         'Test the Motion Draw App!',
-                      ), Text("$posX, $posY, $posZ")
+                      ), Text("${posX.toStringAsFixed(2)}, ${posY.toStringAsFixed(2)}, ${posZ.toStringAsFixed(2)}")
                     ]
                   )
                 ),
@@ -111,12 +119,20 @@ class DrawPageState extends State<DrawPage> {
         ), const Spacer(),
         Padding(
           padding: const EdgeInsets.all(20.0),
-          child: ElevatedButton(
+          child: Column(
+            children: [ElevatedButton(
             onPressed: () {
               setState(() { canDraw = !canDraw; });
             },
             child: Text(buttonText()),
+            
           ),
+          ElevatedButton(
+            onPressed: () {
+            },
+            child: Text(buttonText2()),
+          ),],
+          )
         ),
       ])
     );

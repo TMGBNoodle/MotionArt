@@ -10,13 +10,13 @@ class Sensordata {
     init();
   }
   DateTime dateTime = DateTime.now();
-  Duration samplePeriod = const Duration(milliseconds: 10);
-  int multiplier = 50;
-  double minX = -2;
-  double minY = -2;
-  double maxX = 6;
-  double maxY = 12;
-  List<double> times = [0];
+  final Duration samplePeriod = const Duration(milliseconds: 1);
+  final int multiplier = 50;
+  final double minX = -3;
+  final double minY = -9;
+  final double maxX = 3;
+  final double maxY = 3;
+  //List<double> times = [0];
   List<double> xAccels = [0, 0];
   List<double> yAccels = [0, 0];
   List<double> zAccels = [0, 0]; 
@@ -66,12 +66,9 @@ class Sensordata {
         yAccels[1] = yAccels[1]/count;
         zAccels[1] = zAccels[1]/count;
         count = 0;
-        print("Sampling finished, ${xAccels[1]}");
         if(xAccels[1].abs() <= 0.05){
           xAccels[1] = 0.0;
           xZeroCount+=1;
-        } else if(xAccels[1].abs() > 100) {
-          xAccels[1] = xAccels[1].sign * 100;
         }
         else {xZeroCount = 0;}
         if(yAccels[1].abs() <= 0.05){
