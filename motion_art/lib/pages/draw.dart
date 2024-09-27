@@ -18,6 +18,8 @@ class DrawPage extends StatefulWidget {
 class DrawPageState extends State<DrawPage> {
   Sensordata sensor = Sensordata();
   //int _counter = 0;
+  double xPosOffset = 150;
+  double yPosOffset = 300;
   double posX = 0;
   double posY = 0;
   double posZ = 0;
@@ -36,18 +38,19 @@ class DrawPageState extends State<DrawPage> {
 
       //_counter++;
       xyz = sensor.grabXYZ();
+      canDraw = sensor.zeroFlag;
       posX = xyz![0];
-      posY = xyz![1];
+      posY = -xyz![1];
       posZ = xyz![2];
-      positions.add(Offset(posX, posY));
+      positions.add(Offset(posX + xPosOffset, posY + yPosOffset));
     });
   }
   late Timer _timer;
 
   String buttonText() {
     if (canDraw) {
-      return "Stop Drawing";
-    } return "Start Drawing";
+      return "Please don't move the phone, calibrating";
+    } return "Calibrated";
   }
 
   get background => null;
@@ -127,10 +130,10 @@ class MotionPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color=Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 5;
+    // final paint = Paint()
+    //   ..color=Colors.black
+    //   ..strokeCap = StrokeCap.round
+    //   ..strokeWidth = 5;
 
     final otherPaint = Paint()
       ..color = Colors.green

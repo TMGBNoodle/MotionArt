@@ -12,6 +12,10 @@ class Sensordata {
   DateTime dateTime = DateTime.now();
   Duration samplePeriod = const Duration(milliseconds: 10);
   int multiplier = 50;
+  double minX = -2;
+  double minY = -2;
+  double maxX = 6;
+  double maxY = 12;
   List<double> times = [0];
   List<double> xAccels = [0, 0];
   List<double> yAccels = [0, 0];
@@ -66,8 +70,8 @@ class Sensordata {
         if(xAccels[1].abs() <= 0.05){
           xAccels[1] = 0.0;
           xZeroCount+=1;
-        } else if(xAccels[1].abs() > 50) {
-          xAccels[1] = 100;
+        } else if(xAccels[1].abs() > 100) {
+          xAccels[1] = xAccels[1].sign * 100;
         }
         else {xZeroCount = 0;}
         if(yAccels[1].abs() <= 0.05){
@@ -78,28 +82,31 @@ class Sensordata {
           zAccels[1] = 0.0;
           zZeroCount+=1;
         } else {zZeroCount = 0;}
-        if(xZeroCount>=10){
+        if(xZeroCount>=2){
           xVels[1] = 0;
         } else{
           xVels[1] = xVels[0] + xAccels[0] + ((xAccels[1]-xAccels[0])/2) * deltaT;
         }
-        if(yZeroCount>=10){
+        if(yZeroCount>=2){
           yVels[1] = 0;
         } else {
           yVels[1] = yVels[0] + yAccels[0] + ((yAccels[1]-yAccels[0])/2) * deltaT;
         }
-        if(zZeroCount>=10){
+        if(zZeroCount>=2){
           zVels[1] = 0;
         } else {
           zVels[1] = zVels[0] + zAccels[0] + ((zAccels[1]-zAccels[0])/2) * deltaT;
         }
-        xPositions[1] = xPositions[0] + xVels[0] + ((xVels[1] - xVels[0])/2) * deltaT;
-        yPositions[1] = yPositions[0] + yVels[0] + ((yVels[1] - yVels[0])/2) * deltaT;
+        xPositions[1] = min(maxX, max((xPositions[0] + xVels[0] + ((xVels[1] - xVels[0])/2) * deltaT),minX));
+        yPositions[1] = min(maxY, max((yPositions[0] + yVels[0] + ((yVels[1] - yVels[0])/2) * deltaT),minY));
         zPositions[1] = zPositions[0] + zVels[0] + ((zVels[1] - zVels[0])/2) * deltaT;
 
         xAccels[0] = xAccels[1];
         yAccels[0] = yAccels[1];
         zAccels[0] = zAccels[1];
+        xAccels[1] = 0;
+        yAccels[1] = 0;
+        zAccels[1] = 0;
 
         xVels[0] = xVels[1];
         yVels[0] = yVels[1];
